@@ -1,15 +1,22 @@
-"""First SQLite operation: create a books table."""
+"""SQLite schema setup for the learning exercises."""
 
 from __future__ import annotations
 
-import argparse
 import sqlite3
 from contextlib import closing
 from pathlib import Path
 
 
 def create_books_table(database_path: str | Path) -> None:
-    """Create the database file and books table if needed."""
+    """Create the database file and books table if needed.
+
+    Args:
+        database_path: File path for the SQLite database. Missing parent
+            directories are created automatically.
+
+    Returns:
+        None.
+    """
     path = Path(database_path)
     path.parent.mkdir(parents=True, exist_ok=True)
 
@@ -27,22 +34,3 @@ def create_books_table(database_path: str | Path) -> None:
                 )
                 """
             )
-
-
-def main() -> None:
-    """Create a local database with an empty books table."""
-    parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument(
-        "--database",
-        type=Path,
-        default=Path("data/books.sqlite3"),
-        help="database file path (default: data/books.sqlite3)",
-    )
-    args = parser.parse_args()
-
-    create_books_table(args.database)
-    print(f"Created books table in {args.database}")
-
-
-if __name__ == "__main__":
-    main()

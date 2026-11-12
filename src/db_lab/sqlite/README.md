@@ -1,69 +1,84 @@
-# SQLite: Create the Books Table
+# SQLite Basics
 
-This lesson performs one operation: create a `books` table in a SQLite
-database file.
+This folder teaches SQLite through small operations, one at a time. The current
+operations create the `books` table and insert one book row. The database is a
+regular file, so you can keep it and inspect it later without running a database
+server.
+
+## Code layout
+
+- `cli.py` is the only command-line entry point. Its `main()` parses the command
+  and calls the matching function.
+- `schema.py` creates the database file and `books` table.
+- `books.py` inserts a book into an existing `books` table.
+- `data/books.sqlite3` is the default database file. The `data/` folder is
+  ignored by Git, so your local database is not added to code commits.
 
 ## Tools needed
 
 - Python 3.10 or newer.
-- Python's built-in `sqlite3` module; no package installation or virtual
-  environment is needed.
-- Optional: the `sqlite3` command-line tool or a SQLite database viewer to
-  inspect the database interactively.
+- Python's built-in `sqlite3` module. No package installation, virtual
+  environment, or database server is needed.
+- Optional GUI: DB Browser for SQLite or SQLiteStudio to browse the database.
+- Optional CLI: the `sqlite3` command-line program to inspect it in a terminal.
 
-## Run
+## How Commands Run
 
-Run this from the repository root:
+Run commands from the repository root. `PYTHONPATH=src` tells Python to find
+the project package under `src/`; `-m db_lab.sqlite.cli` runs the CLI module.
+The module's final `if __name__ == "__main__":` block calls `main()` when it is
+run this way. `main()` reads the command-line arguments and dispatches the
+selected operation to `schema.py` or `books.py`. The CLI has one entry point and
+performs one selected operation per invocation.
 
-```bash
-PYTHONPATH=src /usr/bin/python3 -m db_lab.sqlite.sqlite_basics
-```
-
-By default, the database is saved at `data/books.sqlite3`. The file is local,
-ignored by Git, and remains available to inspect. Choose a different path with:
-
-```bash
-PYTHONPATH=src /usr/bin/python3 -m db_lab.sqlite.sqlite_basics --database data/review.sqlite3
-```
-
-## Verify
-
-Check the table and its columns using Python's built-in SQLite module:
+The default command creates the `books` table:
 
 ```bash
-/usr/bin/python3 - <<'PY'
-import sqlite3
-
-with sqlite3.connect("data/books.sqlite3") as connection:
-    columns = [row[1] for row in connection.execute("PRAGMA table_info(books)")]
-
-expected = ["id", "title", "author", "year"]
-assert columns == expected, f"Expected {expected}, found {columns}"
-print(f"PASS: books table columns are {columns}")
-PY
+PYTHONPATH=src /usr/bin/python3 -m db_lab.sqlite.cli
 ```
 
-## Inspect with a GUI or the command line
-
-You can open `data/books.sqlite3` with a SQLite GUI, for example DB Browser for
-SQLite or SQLiteStudio. In the GUI, open the database file and inspect the
-`books` table and its schema. These are optional tools; the Python verification
-above needs no extra installation.
-
-If the `sqlite3` command-line tool is installed, inspect the database with:
+This creates `data/books.sqlite3` and prints a confirmation. It is safe to run
+again: `CREATE TABLE IF NOT EXISTS` leaves an existing table and its rows intact.
+To choose a different database file, use the explicit `create-table` operation:
 
 ```bash
-sqlite3 data/books.sqlite3
+PYTHONPATH=src /usr/bin/python3 -m db_lab.sqlite.cli create-table --database data/review.sqlite3
 ```
 
-At the SQLite prompt, try:
+The insert operation adds one row. Create the table first; insertion does not
+create it automatically:
 
-```sql
-.tables
-.schema books
-PRAGMA table_info(books);
-.quit
+```bash
+PYTHONPATH=src /usr/bin/python3 -m db_lab.sqlite.cli insert-book "The Hobbit" "J. R. R. Tolkien" 1937
 ```
 
-The expected columns are `id`, `title`, `author`, and `year`. This lesson does
-not insert any rows yet.
+The title and author are required; the year is optional. Every run inserts a
+new row, so running this command repeatedly adds duplicates. To use a non-default
+database, pass `--database` after the arguments:
+
+```bash
+PYTHONPATH=src /usr/bin/python3 -m db_lab.sqlite.cli insert-book "The Hobbit" "J. R. R. Tolkien" 1937 --database data/review.sqlite3
+```
+
+## What the Table Enforces
+
+- `id INTEGER PRIMARY KEY`: SQLite assigns each row an integer ID.
+- `title TEXT NOT NULL` and `author TEXT NOT NULL`: these values are required.
+- `year INTEGER CHECK (year IS NULL OR year > 0)`: an unknown year is allowed;
+  a year that is provided must be positive.
+
+The insert code uses `?` placeholders and supplies values separately. This keeps
+book text as data instead of treating it as part of the SQL command.
+
+## Verify and Inspect
+
+If the SQLite CLI is installed, check the table and its contents:
+
+```bash
+sqlite3 data/books.sqlite3 ".schema books"
+sqlite3 data/books.sqlite3 "SELECT id, title, author, year FROM books;"
+```
+
+Or open `data/books.sqlite3` in DB Browser for SQLite or SQLiteStudio to browse
+the schema and rows. The expected columns are `id`, `title`, `author`, and
+`year`.
