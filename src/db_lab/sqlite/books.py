@@ -34,3 +34,21 @@ def insert_book(
             if cursor.lastrowid is None:
                 raise RuntimeError("SQLite did not return an ID for the new book")
             return cursor.lastrowid
+
+
+def list_books(
+    database_path: str | Path,
+) -> list[tuple[int, str, str, int | None]]:
+    """Return all books ordered by their generated ID.
+
+    Args:
+        database_path: Path to a database containing a ``books`` table.
+
+    Returns:
+        Book rows as ``(id, title, author, year)`` tuples. The year is ``None``
+        when it was not recorded.
+    """
+    with closing(sqlite3.connect(database_path)) as connection:
+        return connection.execute(
+            "SELECT id, title, author, year FROM books ORDER BY id"
+        ).fetchall()

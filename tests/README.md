@@ -37,5 +37,14 @@ Inserts a book without a year and checks that SQLite stores the missing value as
 Attempts to insert a negative year and checks that the table's `CHECK` constraint
 rejects it with an integrity error.
 
+**`test_list_books_returns_empty_list_for_empty_table`**
+
+Checks that listing a table with no rows returns an empty list.
+
+**`test_list_books_returns_rows_in_id_order`**
+
+Inserts two books and checks that listing returns both rows in generated-ID order,
+including `None` for an unknown year.
+
 SQLite tests create temporary database files and clean them up after each test,
 so they do not change the saved database in `data/`.

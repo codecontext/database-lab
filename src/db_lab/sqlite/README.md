@@ -1,16 +1,16 @@
 # SQLite Basics
 
 This folder teaches SQLite through small operations, one at a time. The current
-operations create the `books` table and insert one book row. The database is a
-regular file, so you can keep it and inspect it later without running a database
-server.
+operations create the `books` table, insert a book, and list saved books. The
+database is a regular file, so you can keep it and inspect it later without
+running a database server.
 
 ## Code layout
 
 - `cli.py` is the only command-line entry point. Its `main()` parses the command
   and calls the matching function.
 - `schema.py` creates the database file and `books` table.
-- `books.py` inserts a book into an existing `books` table.
+- `books.py` inserts and lists books in the `books` table.
 - `data/books.sqlite3` is the default database file. The `data/` folder is
   ignored by Git, so your local database is not added to code commits.
 
@@ -76,7 +76,23 @@ PYTHONPATH=src /usr/bin/python3 -m db_lab.sqlite.cli insert-book "Year Not Recor
 The insert code uses `?` placeholders and supplies values separately. This keeps
 book text as data instead of treating it as part of the SQL command.
 
-### 3. Inspect the saved rows
+### 3. List books
+
+Use the CLI to read all rows from the default database:
+
+```bash
+PYTHONPATH=src /usr/bin/python3 -m db_lab.sqlite.cli list-books
+```
+
+Rows are displayed in ID order. If the table is empty, the command prints
+`No books found.` To list rows from another database file, put `--database`
+after the operation name:
+
+```bash
+PYTHONPATH=src /usr/bin/python3 -m db_lab.sqlite.cli list-books --database data/review.sqlite3
+```
+
+### 4. Inspect the saved rows
 
 If the SQLite CLI is installed, check the table and its contents:
 

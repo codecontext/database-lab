@@ -5,7 +5,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from db_lab.sqlite.books import insert_book
+from db_lab.sqlite.books import insert_book, list_books
 from db_lab.sqlite.schema import create_books_table
 
 
@@ -49,6 +49,21 @@ class InsertBookTests(unittest.TestCase):
     def test_insert_book_rejects_non_positive_year(self) -> None:
         with self.assertRaises(sqlite3.IntegrityError):
             insert_book(self.database_path, "Invalid Year", "Test Author", -1)
+
+    def test_list_books_returns_empty_list_for_empty_table(self) -> None:
+        self.assertEqual(list_books(self.database_path), [])
+
+    def test_list_books_returns_rows_in_id_order(self) -> None:
+        insert_book(self.database_path, "Second", "Author B", 2000)
+        insert_book(self.database_path, "Third", "Author C")
+
+        self.assertEqual(
+            list_books(self.database_path),
+            [
+                (1, "Second", "Author B", 2000),
+                (2, "Third", "Author C", None),
+            ],
+        )
 
 
 if __name__ == "__main__":

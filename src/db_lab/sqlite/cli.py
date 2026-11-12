@@ -5,7 +5,7 @@ from __future__ import annotations
 import argparse
 from pathlib import Path
 
-from .books import insert_book
+from .books import insert_book, list_books
 from .schema import create_books_table
 
 
@@ -49,15 +49,35 @@ def main() -> None:
         help="database file path (default: data/books.sqlite3)",
     )
 
+    list_parser = operations.add_parser(
+        "list-books",
+        help="list all books in the books table",
+    )
+    list_parser.add_argument(
+        "--database",
+        type=Path,
+        default=DEFAULT_DATABASE,
+        help="database file path (default: data/books.sqlite3)",
+    )
+
     args = parser.parse_args()
 
     if args.operation in (None, "create-table"):
         database_path = getattr(args, "database", DEFAULT_DATABASE)
         create_books_table(database_path)
         print(f"Created books table in {database_path}")
-    else:
+    elif args.operation == "insert-book":
         book_id = insert_book(args.database, args.title, args.author, args.year)
         print(f"Inserted book with ID {book_id}")
+    else:
+        books = list_books(args.database)
+        if not books:
+            print("No books found.")
+            return
+
+        for book_id, title, author, year in books:
+            display_year = year if year is not None else "year unknown"
+            print(f"{book_id}: {title} by {author} ({display_year})")
 
 
 if __name__ == "__main__":
