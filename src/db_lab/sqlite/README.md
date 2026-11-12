@@ -31,33 +31,39 @@ run this way. `main()` reads the command-line arguments and dispatches the
 selected operation to `schema.py` or `books.py`. The CLI has one entry point and
 performs one selected operation per invocation.
 
-The default command creates the `books` table:
+## Add and View Data
+
+Run the following steps from the repository root.
+
+### 1. Create the table
+
+This creates `data/books.sqlite3` and an empty `books` table:
 
 ```bash
 PYTHONPATH=src /usr/bin/python3 -m db_lab.sqlite.cli
 ```
 
-This creates `data/books.sqlite3` and prints a confirmation. It is safe to run
-again: `CREATE TABLE IF NOT EXISTS` leaves an existing table and its rows intact.
-To choose a different database file, use the explicit `create-table` operation:
+It is safe to run again; an existing table and its rows are left intact. To use
+a different database file, specify its path:
 
 ```bash
 PYTHONPATH=src /usr/bin/python3 -m db_lab.sqlite.cli create-table --database data/review.sqlite3
 ```
 
-The insert operation adds one row. Create the table first; insertion does not
-create it automatically:
+### 2. Insert a book
+
+Insert one row into the default database. The table must already exist:
 
 ```bash
 PYTHONPATH=src /usr/bin/python3 -m db_lab.sqlite.cli insert-book "The Hobbit" "J. R. R. Tolkien" 1937
 ```
 
-The title and author are required; the year is optional. Every run inserts a
-new row, so running this command repeatedly adds duplicates. To use a non-default
-database, pass `--database` after the arguments:
+Title and author are required; year is optional. To leave the year unknown, omit
+it. Each run inserts a new row, so running the same command again creates a
+duplicate. To insert into a different database, pass `--database`:
 
 ```bash
-PYTHONPATH=src /usr/bin/python3 -m db_lab.sqlite.cli insert-book "The Hobbit" "J. R. R. Tolkien" 1937 --database data/review.sqlite3
+PYTHONPATH=src /usr/bin/python3 -m db_lab.sqlite.cli insert-book "Year Not Recorded" "Database Lab" --database data/review.sqlite3
 ```
 
 ## What the Table Enforces
@@ -70,7 +76,7 @@ PYTHONPATH=src /usr/bin/python3 -m db_lab.sqlite.cli insert-book "The Hobbit" "J
 The insert code uses `?` placeholders and supplies values separately. This keeps
 book text as data instead of treating it as part of the SQL command.
 
-## Verify and Inspect
+### 3. Inspect the saved rows
 
 If the SQLite CLI is installed, check the table and its contents:
 
