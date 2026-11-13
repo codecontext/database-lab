@@ -5,7 +5,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from db_lab.sqlite.books import insert_book, list_books
+from db_lab.sqlite.books import find_books, insert_book, list_books
 from db_lab.sqlite.schema import create_books_table
 
 
@@ -62,6 +62,24 @@ class InsertBookTests(unittest.TestCase):
             [
                 (1, "Second", "Author B", 2000),
                 (2, "Third", "Author C", None),
+            ],
+        )
+
+    def test_find_books_returns_partial_matches_in_id_order(self) -> None:
+        insert_book(self.database_path, "The Hobbit", "J. R. R. Tolkien", 1937)
+        insert_book(self.database_path, "The Silmarillion", "J. R. R. Tolkien", 1977)
+        insert_book(self.database_path, "Pride and Prejudice", "Jane Austen", 1813)
+
+        self.assertEqual(
+            find_books(self.database_path, "hobbit"),
+            [(1, "The Hobbit", "J. R. R. Tolkien", 1937)],
+        )
+
+        self.assertEqual(
+            find_books(self.database_path, author="tolkien"),
+            [
+                (1, "The Hobbit", "J. R. R. Tolkien", 1937),
+                (2, "The Silmarillion", "J. R. R. Tolkien", 1977),
             ],
         )
 

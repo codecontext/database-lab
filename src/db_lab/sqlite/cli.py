@@ -5,7 +5,7 @@ from __future__ import annotations
 import argparse
 from pathlib import Path
 
-from .books import insert_book, list_books
+from .books import find_books, insert_book, list_books
 from .schema import create_books_table
 
 
@@ -60,6 +60,25 @@ def main() -> None:
         help="database file path (default: data/books.sqlite3)",
     )
 
+    find_parser = operations.add_parser(
+        "find-books",
+        help="find books whose title or author contains the given text",
+    )
+    find_parser.add_argument(
+        "--title",
+        help="partial title match, case-insensitive",
+    )
+    find_parser.add_argument(
+        "--author",
+        help="partial author match, case-insensitive",
+    )
+    find_parser.add_argument(
+        "--database",
+        type=Path,
+        default=DEFAULT_DATABASE,
+        help="database file path (default: data/books.sqlite3)",
+    )
+
     args = parser.parse_args()
 
     if args.operation in (None, "create-table"):
@@ -69,6 +88,15 @@ def main() -> None:
     elif args.operation == "insert-book":
         book_id = insert_book(args.database, args.title, args.author, args.year)
         print(f"Inserted book with ID {book_id}")
+    elif args.operation == "find-books":
+        books = find_books(args.database, title=args.title, author=args.author)
+        if not books:
+            print("No books found.")
+            return
+
+        for book_id, title, author, year in books:
+            display_year = year if year is not None else "year unknown"
+            print(f"{book_id}: {title} by {author} ({display_year})")
     else:
         books = list_books(args.database)
         if not books:
