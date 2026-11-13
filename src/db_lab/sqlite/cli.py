@@ -62,6 +62,12 @@ def main() -> None:
         help="list all books in the books table",
     )
     list_parser.add_argument(
+        "--order",
+        choices=["id", "year"],
+        default="id",
+        help="sort order for the results (default: id)",
+    )
+    list_parser.add_argument(
         "--database",
         type=Path,
         default=DEFAULT_DATABASE,
@@ -192,7 +198,7 @@ def main() -> None:
             display_year = year if year is not None else "year unknown"
             print(f"{book_id}: {title} by {author} ({display_year})")
     else:
-        books = list_books(args.database)
+        books = list_books(args.database, order_by=getattr(args, "order", "id"))
         if not books:
             print("No books found.")
             return

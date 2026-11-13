@@ -78,18 +78,21 @@ book text as data instead of treating it as part of the SQL command.
 
 ### 3. List books
 
-Use the CLI to read all rows from the default database:
+Use the CLI to read all rows from the default database. The default order is by
+ID, and you can also sort by publication year with unknown years shown last:
 
 ```bash
 PYTHONPATH=src /usr/bin/python3 -m db_lab.sqlite.cli list-books
+PYTHONPATH=src /usr/bin/python3 -m db_lab.sqlite.cli list-books --order year
 ```
 
-Rows are displayed in ID order. If the table is empty, the command prints
-`No books found.` To list rows from another database file, put `--database`
-after the operation name:
+Rows are displayed in ID order by default. If the table is empty, the command
+prints `No books found.` To list rows from another database file, put
+`--database` after the operation name:
 
 ```bash
 PYTHONPATH=src /usr/bin/python3 -m db_lab.sqlite.cli list-books --database data/review.sqlite3
+PYTHONPATH=src /usr/bin/python3 -m db_lab.sqlite.cli list-books --order year --database data/review.sqlite3
 ```
 
 ### 4. Update a book

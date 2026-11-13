@@ -73,6 +73,20 @@ class InsertBookTests(unittest.TestCase):
             ],
         )
 
+    def test_list_books_can_sort_by_year_with_unknown_years_last(self) -> None:
+        insert_book(self.database_path, "Late Book", "Author B", 2024)
+        insert_book(self.database_path, "Old Book", "Author A", 1937)
+        insert_book(self.database_path, "No Year", "Author C")
+
+        self.assertEqual(
+            list_books(self.database_path, order_by="year"),
+            [
+                (2, "Old Book", "Author A", 1937),
+                (1, "Late Book", "Author B", 2024),
+                (3, "No Year", "Author C", None),
+            ],
+        )
+
     def test_find_books_returns_partial_matches_in_id_order(self) -> None:
         insert_book(self.database_path, "The Hobbit", "J. R. R. Tolkien", 1937)
         insert_book(self.database_path, "The Silmarillion", "J. R. R. Tolkien", 1977)

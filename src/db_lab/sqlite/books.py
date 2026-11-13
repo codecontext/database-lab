@@ -38,20 +38,27 @@ def insert_book(
 
 def list_books(
     database_path: str | Path,
+    order_by: str = "id",
 ) -> list[tuple[int, str, str, int | None]]:
-    """Return all books ordered by their generated ID.
+    """Return books in a chosen order.
 
     Args:
         database_path: Path to a database containing a ``books`` table.
+        order_by: Sort key. Supported values are ``"id"`` and ``"year"``.
 
     Returns:
         Book rows as ``(id, title, author, year)`` tuples. The year is ``None``
         when it was not recorded.
     """
+    if order_by == "id":
+        query = "SELECT id, title, author, year FROM books ORDER BY id"
+    elif order_by == "year":
+        query = "SELECT id, title, author, year FROM books ORDER BY year IS NULL, year, id"
+    else:
+        raise ValueError(f"Unsupported order_by value: {order_by!r}")
+
     with closing(sqlite3.connect(database_path)) as connection:
-        return connection.execute(
-            "SELECT id, title, author, year FROM books ORDER BY id"
-        ).fetchall()
+        return connection.execute(query).fetchall()
 
 
 def update_book(
