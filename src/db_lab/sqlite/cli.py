@@ -131,6 +131,11 @@ def main() -> None:
         help="partial author match, case-insensitive",
     )
     find_parser.add_argument(
+        "--year",
+        type=int,
+        help="exact publication year to match",
+    )
+    find_parser.add_argument(
         "--database",
         type=Path,
         default=DEFAULT_DATABASE,
@@ -173,7 +178,12 @@ def main() -> None:
     elif args.operation == "count-books":
         print(f"Total books: {count_books(args.database)}")
     elif args.operation == "find-books":
-        books = find_books(args.database, title=args.title, author=args.author)
+        books = find_books(
+            args.database,
+            title=args.title,
+            author=args.author,
+            year=args.year,
+        )
         if not books:
             print("No books found.")
             return
