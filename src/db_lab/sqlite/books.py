@@ -166,17 +166,21 @@ def find_books(
     title: str | None = None,
     author: str | None = None,
     year: int | None = None,
+    year_from: int | None = None,
+    year_to: int | None = None,
 ) -> list[tuple[int, str, str, int | None]]:
     """Return books matching the supplied filters.
 
     Text filters support partial, case-insensitive matching for title and author.
-    When a year is provided, only books published in that year are returned.
+    Exact and range filters can also be applied to the publication year.
 
     Args:
         database_path: Path to a database containing a ``books`` table.
         title: Optional substring to match against the book title.
         author: Optional substring to match against the author name.
         year: Optional exact publication year to filter on.
+        year_from: Optional minimum publication year to include.
+        year_to: Optional maximum publication year to include.
 
     Returns:
         Matching book rows in ascending ID order.
@@ -189,6 +193,8 @@ def find_books(
     # AND LOWER(title) LIKE LOWER(?)
     # AND LOWER(author) LIKE LOWER(?)
     # AND year = ?
+    # AND year >= ?
+    # AND year <= ?
     # ORDER BY id
 
     query = "SELECT id, title, author, year FROM books WHERE 1 = 1"
@@ -205,6 +211,14 @@ def find_books(
     if year is not None:
         query += " AND year = ?"
         parameters.append(year)
+
+    if year_from is not None:
+        query += " AND year >= ?"
+        parameters.append(year_from)
+
+    if year_to is not None:
+        query += " AND year <= ?"
+        parameters.append(year_to)
 
     query += " ORDER BY id"
 

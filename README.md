@@ -32,4 +32,15 @@ through Python's standard library and needs no separate server.
 - `data/`: local database files kept for inspection and ignored by Git.
 - `tests/`: automated checks, added alongside the exercises they cover.
 
+## Current SQLite exercises
+
+The SQLite track covers the core relational workflow used in many database labs:
+
+- create a table with constraints and a schema
+- insert rows with required values and optional metadata
+- list and sort records by ID or publication year
+- update individual fields safely
+- find rows by text, exact year, and year range
+- delete rows and count total records
+
 Start with the guide in [`src/db_lab/sqlite/README.md`](src/db_lab/sqlite/README.md).

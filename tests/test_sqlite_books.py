@@ -140,6 +140,28 @@ class InsertBookTests(unittest.TestCase):
         )
         self.assertEqual(find_books(self.database_path, year=9999), [])
 
+    def test_find_books_supports_year_range_filter(self) -> None:
+        insert_book(self.database_path, "The Hobbit", "J. R. R. Tolkien", 1937)
+        insert_book(self.database_path, "The Silmarillion", "J. R. R. Tolkien", 1977)
+        insert_book(self.database_path, "Pride and Prejudice", "Jane Austen", 1813)
+        insert_book(self.database_path, "Untitled", "Unknown Author")
+
+        self.assertEqual(
+            find_books(self.database_path, year_from=1800, year_to=1950),
+            [
+                (1, "The Hobbit", "J. R. R. Tolkien", 1937),
+                (3, "Pride and Prejudice", "Jane Austen", 1813),
+            ],
+        )
+        self.assertEqual(
+            find_books(self.database_path, year_from=1950, year_to=2000),
+            [(2, "The Silmarillion", "J. R. R. Tolkien", 1977)],
+        )
+        self.assertEqual(
+            find_books(self.database_path, year_from=2000, year_to=2100),
+            [],
+        )
+
     def test_update_book_changes_selected_fields(self) -> None:
         book_id = insert_book(self.database_path, "Old Title", "Old Author", 2000)
 

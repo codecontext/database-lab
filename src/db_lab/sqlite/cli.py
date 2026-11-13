@@ -142,6 +142,16 @@ def main() -> None:
         help="exact publication year to match",
     )
     find_parser.add_argument(
+        "--year-from",
+        type=int,
+        help="minimum publication year to include",
+    )
+    find_parser.add_argument(
+        "--year-to",
+        type=int,
+        help="maximum publication year to include",
+    )
+    find_parser.add_argument(
         "--database",
         type=Path,
         default=DEFAULT_DATABASE,
@@ -189,6 +199,8 @@ def main() -> None:
             title=args.title,
             author=args.author,
             year=args.year,
+            year_from=args.year_from,
+            year_to=args.year_to,
         )
         if not books:
             print("No books found.")

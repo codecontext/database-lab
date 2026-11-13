@@ -146,13 +146,14 @@ The command prints the total number of stored rows.
 ### 8. Find books by text
 
 Use partial, case-insensitive matches to search the table. Search by title,
-author, both at the same time, or by an exact year:
+author, both at the same time, an exact year, or a year range:
 
 ```bash
 PYTHONPATH=src /usr/bin/python3 -m db_lab.sqlite.cli find-books --title "hobbit"
 PYTHONPATH=src /usr/bin/python3 -m db_lab.sqlite.cli find-books --author "tolkien"
 PYTHONPATH=src /usr/bin/python3 -m db_lab.sqlite.cli find-books --title "the" --author "tolkien"
 PYTHONPATH=src /usr/bin/python3 -m db_lab.sqlite.cli find-books --year 1937
+PYTHONPATH=src /usr/bin/python3 -m db_lab.sqlite.cli find-books --year-from 1800 --year-to 1950
 ```
 
 The CLI prints each matching row in ID order. If nothing matches, it prints
