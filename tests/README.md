@@ -46,5 +46,15 @@ Checks that listing a table with no rows returns an empty list.
 Inserts two books and checks that listing returns both rows in generated-ID order,
 including `None` for an unknown year.
 
+**`test_find_books_returns_partial_matches_in_id_order`**
+
+Inserts several books, then checks that a case-insensitive partial match finds
+rows by title and by author in ID order.
+
+**`test_update_book_changes_selected_fields`**
+
+Inserts one book, updates its fields by ID, and verifies that the chosen values
+change while the rest of the record remains intact.
+
 SQLite tests create temporary database files and clean them up after each test,
 so they do not change the saved database in `data/`.

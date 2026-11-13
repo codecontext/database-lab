@@ -54,6 +54,56 @@ def list_books(
         ).fetchall()
 
 
+def update_book(
+    database_path: str | Path,
+    book_id: int,
+    title: str | None = None,
+    author: str | None = None,
+    year: int | None = None,
+) -> None:
+    """Update one or more fields on a book row.
+
+    Args:
+        database_path: Path to a database containing a ``books`` table.
+        book_id: Row ID to update.
+        title: New title, if provided.
+        author: New author, if provided.
+        year: New publication year, if provided.
+
+    Returns:
+        None.
+    """
+
+    changes: list[str] = []
+    parameters: list[str | int] = []
+
+    if title is not None:
+        changes.append("title = ?")
+        parameters.append(title)
+
+    if author is not None:
+        changes.append("author = ?")
+        parameters.append(author)
+
+    if year is not None:
+        changes.append("year = ?")
+        parameters.append(year)
+
+    if not changes:
+        raise ValueError("Provide at least one field to update")
+
+    # Final SQL query looks like:
+    # UPDATE books
+    # SET title = ?, author = ?, year = ?
+    # WHERE id = ?
+    update_query = f"UPDATE books SET {', '.join(changes)} WHERE id = ?"
+    parameters.append(book_id)
+
+    with closing(sqlite3.connect(database_path)) as connection:
+        with connection:
+            connection.execute(update_query, tuple(parameters))
+
+
 def find_books(
     database_path: str | Path,
     title: str | None = None,

@@ -5,7 +5,7 @@ from __future__ import annotations
 import argparse
 from pathlib import Path
 
-from .books import find_books, insert_book, list_books
+from .books import find_books, insert_book, list_books, update_book
 from .schema import create_books_table
 
 
@@ -60,6 +60,21 @@ def main() -> None:
         help="database file path (default: data/books.sqlite3)",
     )
 
+    update_parser = operations.add_parser(
+        "update-book",
+        help="update one or more fields on an existing book",
+    )
+    update_parser.add_argument("book_id", type=int, help="book ID to update")
+    update_parser.add_argument("--title", help="new title")
+    update_parser.add_argument("--author", help="new author")
+    update_parser.add_argument("--year", type=int, help="new publication year")
+    update_parser.add_argument(
+        "--database",
+        type=Path,
+        default=DEFAULT_DATABASE,
+        help="database file path (default: data/books.sqlite3)",
+    )
+
     find_parser = operations.add_parser(
         "find-books",
         help="find books whose title or author contains the given text",
@@ -88,6 +103,18 @@ def main() -> None:
     elif args.operation == "insert-book":
         book_id = insert_book(args.database, args.title, args.author, args.year)
         print(f"Inserted book with ID {book_id}")
+    elif args.operation == "update-book":
+        if args.title is None and args.author is None and args.year is None:
+            raise ValueError("Provide at least one field to update")
+
+        update_book(
+            args.database,
+            args.book_id,
+            title=args.title,
+            author=args.author,
+            year=args.year,
+        )
+        print(f"Updated book with ID {args.book_id}")
     elif args.operation == "find-books":
         books = find_books(args.database, title=args.title, author=args.author)
         if not books:

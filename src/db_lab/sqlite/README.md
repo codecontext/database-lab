@@ -92,7 +92,20 @@ after the operation name:
 PYTHONPATH=src /usr/bin/python3 -m db_lab.sqlite.cli list-books --database data/review.sqlite3
 ```
 
-### 4. Find books by text
+### 4. Update a book
+
+Update one or more fields on an existing row by ID. The command changes only
+what you pass in:
+
+```bash
+PYTHONPATH=src /usr/bin/python3 -m db_lab.sqlite.cli update-book 1 --title "The Hobbit" --author "J. R. R. Tolkien" --year 1937
+PYTHONPATH=src /usr/bin/python3 -m db_lab.sqlite.cli update-book 1 --year 1938
+```
+
+You must provide at least one field to update. The book ID is the row to change;
+other rows are left alone.
+
+### 5. Find books by text
 
 Use partial, case-insensitive matches to search the table. Search by title,
 author, or both at the same time:
@@ -106,7 +119,7 @@ PYTHONPATH=src /usr/bin/python3 -m db_lab.sqlite.cli find-books --title "the" --
 The CLI prints each matching row in ID order. If nothing matches, it prints
 `No books found.`
 
-### 5. Inspect the saved rows
+### 6. Inspect the saved rows
 
 If the SQLite CLI is installed, check the table and its contents:
 

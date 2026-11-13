@@ -5,7 +5,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from db_lab.sqlite.books import find_books, insert_book, list_books
+from db_lab.sqlite.books import find_books, insert_book, list_books, update_book
 from db_lab.sqlite.schema import create_books_table
 
 
@@ -82,6 +82,50 @@ class InsertBookTests(unittest.TestCase):
                 (2, "The Silmarillion", "J. R. R. Tolkien", 1977),
             ],
         )
+
+    def test_find_books_supports_combined_title_and_author_filters(self) -> None:
+        insert_book(self.database_path, "The Hobbit", "J. R. R. Tolkien", 1937)
+        insert_book(self.database_path, "The Silmarillion", "J. R. R. Tolkien", 1977)
+        insert_book(self.database_path, "Pride and Prejudice", "Jane Austen", 1813)
+
+        self.assertEqual(
+            find_books(self.database_path, title="the", author="tolkien"),
+            [
+                (1, "The Hobbit", "J. R. R. Tolkien", 1937),
+                (2, "The Silmarillion", "J. R. R. Tolkien", 1977),
+            ],
+        )
+
+    def test_find_books_returns_empty_list_when_no_rows_match(self) -> None:
+        insert_book(self.database_path, "The Hobbit", "J. R. R. Tolkien", 1937)
+
+        self.assertEqual(find_books(self.database_path, title="unknown"), [])
+        self.assertEqual(find_books(self.database_path, author="austen"), [])
+
+    def test_update_book_changes_selected_fields(self) -> None:
+        book_id = insert_book(self.database_path, "Old Title", "Old Author", 2000)
+
+        update_book(
+            self.database_path,
+            book_id,
+            title="New Title",
+            author="New Author",
+            year=2024,
+        )
+
+        with sqlite3.connect(self.database_path) as connection:
+            row = connection.execute(
+                "SELECT id, title, author, year FROM books WHERE id = ?",
+                (book_id,),
+            ).fetchone()
+
+        self.assertEqual(row, (1, "New Title", "New Author", 2024))
+
+    def test_update_book_requires_at_least_one_field(self) -> None:
+        book_id = insert_book(self.database_path, "Old Title", "Old Author", 2000)
+
+        with self.assertRaises(ValueError):
+            update_book(self.database_path, book_id)
 
 
 if __name__ == "__main__":
