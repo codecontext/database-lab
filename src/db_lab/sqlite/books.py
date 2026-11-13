@@ -104,6 +104,20 @@ def update_book(
             connection.execute(update_query, tuple(parameters))
 
 
+def count_books(database_path: str | Path) -> int:
+    """Return the number of rows stored in the books table.
+
+    Args:
+        database_path: Path to a database containing a ``books`` table.
+
+    Returns:
+        Total number of rows currently in the table.
+    """
+    with closing(sqlite3.connect(database_path)) as connection:
+        (count,) = connection.execute("SELECT COUNT(*) FROM books").fetchone()
+        return count
+
+
 def get_book(
     database_path: str | Path,
     book_id: int,

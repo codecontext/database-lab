@@ -129,7 +129,18 @@ PYTHONPATH=src /usr/bin/python3 -m db_lab.sqlite.cli delete-book 2 --database da
 
 The command deletes only the selected ID and leaves the rest of the table alone.
 
-### 7. Find books by text
+### 7. Count books
+
+Use a summary query to see how many rows are currently in the table:
+
+```bash
+PYTHONPATH=src /usr/bin/python3 -m db_lab.sqlite.cli count-books
+PYTHONPATH=src /usr/bin/python3 -m db_lab.sqlite.cli count-books --database data/review.sqlite3
+```
+
+The command prints the total number of stored rows.
+
+### 8. Find books by text
 
 Use partial, case-insensitive matches to search the table. Search by title,
 author, or both at the same time:
@@ -143,7 +154,7 @@ PYTHONPATH=src /usr/bin/python3 -m db_lab.sqlite.cli find-books --title "the" --
 The CLI prints each matching row in ID order. If nothing matches, it prints
 `No books found.`
 
-### 8. Inspect the saved rows
+### 9. Inspect the saved rows
 
 If the SQLite CLI is installed, check the table and its contents:
 

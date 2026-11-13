@@ -69,5 +69,14 @@ Looks up a book by its generated ID and checks that the full row is returned.
 
 Checks that a missing ID results in `None` instead of an error.
 
+**`test_count_books_returns_zero_for_empty_table`**
+
+Checks that the summary count is zero before any rows are inserted.
+
+**`test_count_books_counts_rows`**
+
+Inserts a couple of books and checks that the total count matches the database
+state.
+
 SQLite tests create temporary database files and clean them up after each test,
 so they do not change the saved database in `data/`.

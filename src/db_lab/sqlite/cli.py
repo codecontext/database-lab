@@ -5,7 +5,15 @@ from __future__ import annotations
 import argparse
 from pathlib import Path
 
-from .books import delete_book, find_books, get_book, insert_book, list_books, update_book
+from .books import (
+    count_books,
+    delete_book,
+    find_books,
+    get_book,
+    insert_book,
+    list_books,
+    update_book,
+)
 from .schema import create_books_table
 
 
@@ -99,6 +107,17 @@ def main() -> None:
         help="database file path (default: data/books.sqlite3)",
     )
 
+    count_parser = operations.add_parser(
+        "count-books",
+        help="count the number of rows in the books table",
+    )
+    count_parser.add_argument(
+        "--database",
+        type=Path,
+        default=DEFAULT_DATABASE,
+        help="database file path (default: data/books.sqlite3)",
+    )
+
     find_parser = operations.add_parser(
         "find-books",
         help="find books whose title or author contains the given text",
@@ -151,6 +170,8 @@ def main() -> None:
     elif args.operation == "delete-book":
         delete_book(args.database, args.book_id)
         print(f"Deleted book with ID {args.book_id}")
+    elif args.operation == "count-books":
+        print(f"Total books: {count_books(args.database)}")
     elif args.operation == "find-books":
         books = find_books(args.database, title=args.title, author=args.author)
         if not books:

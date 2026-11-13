@@ -6,6 +6,7 @@ import unittest
 from pathlib import Path
 
 from db_lab.sqlite.books import (
+    count_books,
     delete_book,
     find_books,
     get_book,
@@ -155,6 +156,15 @@ class InsertBookTests(unittest.TestCase):
 
     def test_get_book_returns_none_for_missing_id(self) -> None:
         self.assertIsNone(get_book(self.database_path, 999))
+
+    def test_count_books_returns_zero_for_empty_table(self) -> None:
+        self.assertEqual(count_books(self.database_path), 0)
+
+    def test_count_books_counts_rows(self) -> None:
+        insert_book(self.database_path, "First", "Author A", 2001)
+        insert_book(self.database_path, "Second", "Author B")
+
+        self.assertEqual(count_books(self.database_path), 2)
 
 
 if __name__ == "__main__":
