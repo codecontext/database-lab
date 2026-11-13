@@ -105,7 +105,19 @@ PYTHONPATH=src /usr/bin/python3 -m db_lab.sqlite.cli update-book 1 --year 1938
 You must provide at least one field to update. The book ID is the row to change;
 other rows are left alone.
 
-### 5. Delete a book
+### 5. Show one book
+
+Look up a single row by its generated ID. This is useful when you want to view
+one record without listing the whole table:
+
+```bash
+PYTHONPATH=src /usr/bin/python3 -m db_lab.sqlite.cli show-book 1
+PYTHONPATH=src /usr/bin/python3 -m db_lab.sqlite.cli show-book 2 --database data/review.sqlite3
+```
+
+If the ID does not exist, the command prints `No book found.`
+
+### 6. Delete a book
 
 Remove one row by its generated ID. This is useful when you want to clean up a
 record you added while learning:
@@ -117,7 +129,7 @@ PYTHONPATH=src /usr/bin/python3 -m db_lab.sqlite.cli delete-book 2 --database da
 
 The command deletes only the selected ID and leaves the rest of the table alone.
 
-### 6. Find books by text
+### 7. Find books by text
 
 Use partial, case-insensitive matches to search the table. Search by title,
 author, or both at the same time:
@@ -131,7 +143,7 @@ PYTHONPATH=src /usr/bin/python3 -m db_lab.sqlite.cli find-books --title "the" --
 The CLI prints each matching row in ID order. If nothing matches, it prints
 `No books found.`
 
-### 7. Inspect the saved rows
+### 8. Inspect the saved rows
 
 If the SQLite CLI is installed, check the table and its contents:
 

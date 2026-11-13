@@ -5,7 +5,7 @@ from __future__ import annotations
 import argparse
 from pathlib import Path
 
-from .books import delete_book, find_books, insert_book, list_books, update_book
+from .books import delete_book, find_books, get_book, insert_book, list_books, update_book
 from .schema import create_books_table
 
 
@@ -75,6 +75,18 @@ def main() -> None:
         help="database file path (default: data/books.sqlite3)",
     )
 
+    show_parser = operations.add_parser(
+        "show-book",
+        help="show one book by its ID",
+    )
+    show_parser.add_argument("book_id", type=int, help="book ID to display")
+    show_parser.add_argument(
+        "--database",
+        type=Path,
+        default=DEFAULT_DATABASE,
+        help="database file path (default: data/books.sqlite3)",
+    )
+
     delete_parser = operations.add_parser(
         "delete-book",
         help="delete one book by its ID",
@@ -127,6 +139,15 @@ def main() -> None:
             year=args.year,
         )
         print(f"Updated book with ID {args.book_id}")
+    elif args.operation == "show-book":
+        book = get_book(args.database, args.book_id)
+        if book is None:
+            print("No book found.")
+            return
+
+        book_id, title, author, year = book
+        display_year = year if year is not None else "year unknown"
+        print(f"{book_id}: {title} by {author} ({display_year})")
     elif args.operation == "delete-book":
         delete_book(args.database, args.book_id)
         print(f"Deleted book with ID {args.book_id}")

@@ -104,6 +104,27 @@ def update_book(
             connection.execute(update_query, tuple(parameters))
 
 
+def get_book(
+    database_path: str | Path,
+    book_id: int,
+) -> tuple[int, str, str, int | None] | None:
+    """Return one book row by its generated ID.
+
+    Args:
+        database_path: Path to a database containing a ``books`` table.
+        book_id: Row ID to fetch.
+
+    Returns:
+        The matching ``(id, title, author, year)`` tuple, or ``None`` if no row
+        exists for that ID.
+    """
+    with closing(sqlite3.connect(database_path)) as connection:
+        return connection.execute(
+            "SELECT id, title, author, year FROM books WHERE id = ?",
+            (book_id,),
+        ).fetchone()
+
+
 def delete_book(database_path: str | Path, book_id: int) -> None:
     """Delete one book row by its generated ID.
 

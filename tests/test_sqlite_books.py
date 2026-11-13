@@ -5,7 +5,14 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from db_lab.sqlite.books import delete_book, find_books, insert_book, list_books, update_book
+from db_lab.sqlite.books import (
+    delete_book,
+    find_books,
+    get_book,
+    insert_book,
+    list_books,
+    update_book,
+)
 from db_lab.sqlite.schema import create_books_table
 
 
@@ -137,6 +144,17 @@ class InsertBookTests(unittest.TestCase):
             list_books(self.database_path),
             [(second_id, "Second", "Author B", 2002)],
         )
+
+    def test_get_book_returns_row_for_existing_id(self) -> None:
+        book_id = insert_book(self.database_path, "The Hobbit", "J. R. R. Tolkien", 1937)
+
+        self.assertEqual(
+            get_book(self.database_path, book_id),
+            (book_id, "The Hobbit", "J. R. R. Tolkien", 1937),
+        )
+
+    def test_get_book_returns_none_for_missing_id(self) -> None:
+        self.assertIsNone(get_book(self.database_path, 999))
 
 
 if __name__ == "__main__":

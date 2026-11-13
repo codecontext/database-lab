@@ -61,5 +61,13 @@ change while the rest of the record remains intact.
 Inserts two books, deletes one by ID, and checks that only the selected row is
 removed and the remaining row stays intact.
 
+**`test_get_book_returns_row_for_existing_id`**
+
+Looks up a book by its generated ID and checks that the full row is returned.
+
+**`test_get_book_returns_none_for_missing_id`**
+
+Checks that a missing ID results in `None` instead of an error.
+
 SQLite tests create temporary database files and clean them up after each test,
 so they do not change the saved database in `data/`.
