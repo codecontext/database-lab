@@ -104,6 +104,21 @@ def update_book(
             connection.execute(update_query, tuple(parameters))
 
 
+def delete_book(database_path: str | Path, book_id: int) -> None:
+    """Delete one book row by its generated ID.
+
+    Args:
+        database_path: Path to a database containing a ``books`` table.
+        book_id: Row ID to delete.
+
+    Returns:
+        None.
+    """
+    with closing(sqlite3.connect(database_path)) as connection:
+        with connection:
+            connection.execute("DELETE FROM books WHERE id = ?", (book_id,))
+
+
 def find_books(
     database_path: str | Path,
     title: str | None = None,

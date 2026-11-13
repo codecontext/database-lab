@@ -5,7 +5,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from db_lab.sqlite.books import find_books, insert_book, list_books, update_book
+from db_lab.sqlite.books import delete_book, find_books, insert_book, list_books, update_book
 from db_lab.sqlite.schema import create_books_table
 
 
@@ -126,6 +126,17 @@ class InsertBookTests(unittest.TestCase):
 
         with self.assertRaises(ValueError):
             update_book(self.database_path, book_id)
+
+    def test_delete_book_removes_selected_row(self) -> None:
+        first_id = insert_book(self.database_path, "First", "Author A", 2001)
+        second_id = insert_book(self.database_path, "Second", "Author B", 2002)
+
+        delete_book(self.database_path, first_id)
+
+        self.assertEqual(
+            list_books(self.database_path),
+            [(second_id, "Second", "Author B", 2002)],
+        )
 
 
 if __name__ == "__main__":

@@ -56,5 +56,10 @@ rows by title and by author in ID order.
 Inserts one book, updates its fields by ID, and verifies that the chosen values
 change while the rest of the record remains intact.
 
+**`test_delete_book_removes_selected_row`**
+
+Inserts two books, deletes one by ID, and checks that only the selected row is
+removed and the remaining row stays intact.
+
 SQLite tests create temporary database files and clean them up after each test,
 so they do not change the saved database in `data/`.
