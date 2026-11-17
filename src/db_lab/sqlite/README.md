@@ -143,7 +143,19 @@ PYTHONPATH=src /usr/bin/python3 -m db_lab.sqlite.cli count-books --database data
 
 The command prints the total number of stored rows.
 
-### 8. Find books by text
+### 8. Delete books by title
+
+Remove every row whose title matches exactly. This is useful when you want to
+clear all copies of the same title at once:
+
+```bash
+PYTHONPATH=src /usr/bin/python3 -m db_lab.sqlite.cli delete-books-by-title "The Hobbit"
+PYTHONPATH=src /usr/bin/python3 -m db_lab.sqlite.cli delete-books-by-title "The Hobbit" --database data/review.sqlite3
+```
+
+The command reports how many rows were deleted.
+
+### 9. Find books by text
 
 Use partial, case-insensitive matches to search the table. Search by title,
 author, both at the same time, an exact year, or a year range:

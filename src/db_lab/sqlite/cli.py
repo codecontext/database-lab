@@ -8,6 +8,7 @@ from pathlib import Path
 from .books import (
     count_books,
     delete_book,
+    delete_books_by_title,
     find_books,
     get_book,
     insert_book,
@@ -124,6 +125,18 @@ def main() -> None:
         help="database file path (default: data/books.sqlite3)",
     )
 
+    delete_title_parser = operations.add_parser(
+        "delete-books-by-title",
+        help="delete all books with an exact title match",
+    )
+    delete_title_parser.add_argument("title", help="exact book title to remove")
+    delete_title_parser.add_argument(
+        "--database",
+        type=Path,
+        default=DEFAULT_DATABASE,
+        help="database file path (default: data/books.sqlite3)",
+    )
+
     find_parser = operations.add_parser(
         "find-books",
         help="find books whose title or author contains the given text",
@@ -193,6 +206,9 @@ def main() -> None:
         print(f"Deleted book with ID {args.book_id}")
     elif args.operation == "count-books":
         print(f"Total books: {count_books(args.database)}")
+    elif args.operation == "delete-books-by-title":
+        deleted = delete_books_by_title(args.database, args.title)
+        print(f"Deleted {deleted} book(s) with title {args.title!r}")
     elif args.operation == "find-books":
         books = find_books(
             args.database,

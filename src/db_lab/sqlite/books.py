@@ -161,6 +161,22 @@ def delete_book(database_path: str | Path, book_id: int) -> None:
             connection.execute("DELETE FROM books WHERE id = ?", (book_id,))
 
 
+def delete_books_by_title(database_path: str | Path, title: str) -> int:
+    """Delete every book whose title matches exactly and return the count.
+
+    Args:
+        database_path: Path to a database containing a ``books`` table.
+        title: Exact title value to remove.
+
+    Returns:
+        Number of rows deleted.
+    """
+    with closing(sqlite3.connect(database_path)) as connection:
+        with connection:
+            cursor = connection.execute("DELETE FROM books WHERE title = ?", (title,))
+            return cursor.rowcount
+
+
 def find_books(
     database_path: str | Path,
     title: str | None = None,

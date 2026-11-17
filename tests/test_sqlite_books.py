@@ -8,6 +8,7 @@ from pathlib import Path
 from db_lab.sqlite.books import (
     count_books,
     delete_book,
+    delete_books_by_title,
     find_books,
     get_book,
     insert_book,
@@ -196,6 +197,19 @@ class InsertBookTests(unittest.TestCase):
         self.assertEqual(
             list_books(self.database_path),
             [(second_id, "Second", "Author B", 2002)],
+        )
+
+    def test_delete_books_by_title_removes_all_matching_rows(self) -> None:
+        insert_book(self.database_path, "The Hobbit", "J. R. R. Tolkien", 1937)
+        insert_book(self.database_path, "The Hobbit", "Other Author", 1960)
+        insert_book(self.database_path, "Pride and Prejudice", "Jane Austen", 1813)
+
+        deleted = delete_books_by_title(self.database_path, "The Hobbit")
+
+        self.assertEqual(deleted, 2)
+        self.assertEqual(
+            list_books(self.database_path),
+            [(3, "Pride and Prejudice", "Jane Austen", 1813)],
         )
 
     def test_get_book_returns_row_for_existing_id(self) -> None:
